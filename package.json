@@ -1,0 +1,26 @@
+{
+  "name": "sequoia",
+  "version": "1.0.0",
+  "description": "projeto em node.js e electron",
+  "homepage": "https://github.com/willianpj1/Sequoia#readme",
+  "bugs": {
+    "url": "https://github.com/willianpj1/Sequoia/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willianpj1/Sequoia.git"
+  },
+  "license": "MIT",
+  "author": "Willian Jeronimo",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron.",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "knex": "^3.2.5",
+    "pg": "^8.20.0"
+  }
+}
