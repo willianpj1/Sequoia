@@ -12,15 +12,20 @@
   },
   "license": "MIT",
   "author": "Willian Jeronimo",
-  "type": "module",
+  
   "main": "index.js",
   "scripts": {
     "start": "electron.",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@js-brasil/fakerbr": "^0.0.2",
     "dotenv": "^17.3.1",
+    "faker-br": "^0.5.0",
     "knex": "^3.2.5",
     "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0"
   }
 }
