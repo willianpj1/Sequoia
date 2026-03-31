@@ -1,7 +1,7 @@
 import connection from '../database/Connection.js';
-export default class Customer {
+export default class Users {
     // Tabela no banco
-    static table = 'customer';
+    static table = 'users';
 
     // Mapeamento: índice da coluna no DataTable → nome no banco
     static #columns = ['id', 'nome', 'cpf', null];
@@ -18,9 +18,9 @@ export default class Customer {
 
         try {
 
-            const clean = Customer.#sanitize(data);
+            const clean = Users.#sanitize(data);
 
-            const [result] = await connection(Customer.table)
+            const [result] = await connection(Users.table)
                 .insert(clean)
                 .returning('*');
 
@@ -31,52 +31,36 @@ export default class Customer {
         }
     }
 
-    //Implementamos a pesquisa completa para o cliente
+    //Implementamos a pesquisa completa para o usuário
     static async find(data = {}) {
-        const {
-            term = '',
-            limit = 10,
-            offset = 0,
-            orderType = 'asc',
-            column = 0,
-            draw = 1,
-        } = data;
-
+        const { term = '', limit = 10, offset = 0, orderType = 'asc', column = 0, draw = 1 } = data;
         //Total sem filtro
-        const [{ count: total }] = await connection(Customer.table)
-            .count('id as count');
-
+        const [{ count: total }] = await connection(Users.table).count('id as count');
         //Monta WHERE da busca
         const search = term?.trim();
-
         function applySearch(query) {
             if (search) {
                 query.where(function () {
-                    for (const col of Customer.#searchable) {
+                    for (const col of Users.#searchable) {
                         this.orWhereRaw(`CAST("${col}" AS TEXT) ILIKE ?`, [`%${search}%`]);
                     }
                 });
             }
             return query;
         }
-
         // Total filtrado
-        const filteredQ = connection(Customer.table).count('id as count');
+        const filteredQ = connection(Users.table).count('id as count');
         applySearch(filteredQ);
         const [{ count: filtered }] = await filteredQ;
-
         // Dados paginados
-        const orderColumn = Customer.#columns[column] || 'id';
+        const orderColumn = Users.#columns[column] || 'id';
         const orderDir = orderType === 'desc' ? 'desc' : 'asc';
-
-        const dataQ = connection(Customer.table).select('*');
+        const dataQ = connection(Users.table).select('*');
         applySearch(dataQ);
         dataQ.orderBy(orderColumn, orderDir);
         dataQ.limit(parseInt(limit));
         dataQ.offset(parseInt(offset));
-
         const rows = await dataQ;
-
         return {
             draw: parseInt(draw),
             recordsTotal: parseInt(total),
@@ -90,7 +74,7 @@ export default class Customer {
         if (!id) return { status: false, msg: 'ID é obrigatório' };
 
         try {
-            await connection(Customer.table).where({ id }).del();
+            await connection(Users.table).where({ id }).del();
             return { status: true, msg: 'Excluído com sucesso!' };
         } catch (err) {
             return { status: false, msg: 'Erro: ' + err.message };
@@ -106,18 +90,18 @@ export default class Customer {
         }
 
         try {
-            const clean = Customer.#sanitize(data);
+            const clean = Users.#sanitize(data);
 
             // Remove o id do objeto para não tentar atualizar a PK
             delete clean.id;
 
-            const [result] = await connection(Customer.table)
+            const [result] = await connection(Users.table)
                 .where({ id })
                 .update(clean)
                 .returning('*');
 
             if (!result) {
-                return { status: false, msg: 'Cliente não encontrado', data: [] };
+                return { status: false, msg: 'Usuário não encontrado', data: [] };
             }
 
             return { status: true, msg: 'Atualizado com sucesso!', id: result.id, data: [result] };
@@ -126,11 +110,11 @@ export default class Customer {
         }
     }
 
-    //Retorna apenas um cliente pelo seu ID
+    //Retorna apenas um usuário pelo seu ID
     static async findById(id) {
         if (!id) return null;
 
-        const row = await connection(Customer.table)
+        const row = await connection(Users.table)
             .where({ id })
             .first();
 
@@ -151,7 +135,7 @@ export default class Customer {
             if (value === 'false') { clean[key] = false; continue; }
             clean[key] = value;
         }
-        
+
         return clean;
     }
 }

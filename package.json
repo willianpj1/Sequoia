@@ -1,8 +1,7 @@
 {
-    "name": "sequioia",
+    "name": "sequoia",
     "version": "1.0.0",
-    "main": "index.js",
-    "type": "module",
+    "main": "main.js",
     "private": true,
     "scripts": {
         "start": "chcp 65001 >nul && electron .",

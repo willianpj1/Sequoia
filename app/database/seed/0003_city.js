@@ -19,4 +19,6 @@ exports.seed = async function (knex) {
         }));
         await knex('city').insert(data);
     };
+    console.log('Seed de cidades concluída com sucesso!');
+
 };

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/locale/pt_BR';
 
 export async function seed(knex) {
-  await knex('customer').del();
+  await knex('users').del();
 
   const batchSize = 1000;
   const total = 10000; // Total de registros a serem inseridos
@@ -10,11 +10,16 @@ export async function seed(knex) {
     
     const batch = Array.from({ length: batchSize }, () => ({
       nome: faker.person.fullName(),
+      sobrenome: faker.person.fullName(),
       cpf: faker.string.numeric(11),
+      rg: faker.string.numeric(11),
+      salario: faker.number.int({ min: 1500, max: 20000 }),
+      senha: faker.string.numeric(12),
       ativo: faker.datatype.boolean(),
+      administrador: faker.datatype.boolean(),
     }));
 
-    await knex('customer').insert(batch);
+    await knex('users').insert(batch);
   }
-  console.log('Seed de clientes concluída com sucesso!');
+  console.log('Seed de usuários concluída com sucesso!');
 }
