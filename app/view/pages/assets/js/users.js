@@ -4,6 +4,7 @@ const Action = document.getElementById('action')
 const Id = document.getElementById('id')
 const form = document.getElementById('form');
 Inputmask('999.999.999-99').mask('#cpf');
+Inputmask('99.999.999-9').mask('#rg');
 
 //  CARREGA DADOS DE EDIÇÃO (se existirem)
 (async () => {

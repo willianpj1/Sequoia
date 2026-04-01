@@ -1,7 +1,6 @@
 'use strict';
 
 const { contextBridge, ipcRenderer } = require('electron');
-const { default: Users } = require('../controller/Users');
 
 contextBridge.exposeInMainWorld('api', {
     window: {
@@ -24,7 +23,7 @@ contextBridge.exposeInMainWorld('api', {
             ipcRenderer.on('customer:reload', () => callback());
         },
     },
-    user: {
+    users: {
         insert(data) { return ipcRenderer.invoke('users:insert', data); },
         find(where) { return ipcRenderer.invoke('users:find', where); },
         findById(id) { return ipcRenderer.invoke('users:findById', id); },
@@ -33,5 +32,16 @@ contextBridge.exposeInMainWorld('api', {
         onReload(callback) {
             ipcRenderer.on('users:reload', () => callback());
         },
+    },
+    products: {
+        insert(data) { return ipcRenderer.invoke('products:insert', data); },
+        find(where) { return ipcRenderer.invoke('products:find', where); },
+        findById(id) { return ipcRenderer.invoke('products:findById', id); },
+        update(id, data) { return ipcRenderer.invoke('products:update', id, data); },
+        delete(id) { return ipcRenderer.invoke('products:delete', id); },
+        onReload(callback) {
+            ipcRenderer.on('products:reload', () => callback());
+        },
     }
+
 });

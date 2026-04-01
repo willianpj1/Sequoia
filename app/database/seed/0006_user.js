@@ -13,7 +13,7 @@ export async function seed(knex) {
       sobrenome: faker.person.fullName(),
       cpf: faker.string.numeric(11),
       rg: faker.string.numeric(11),
-      salario: faker.number.int({ min: 1500, max: 20000 }),
+      salario: faker.number.int({ min: 150, max: 200 }),
       senha: faker.string.numeric(12),
       ativo: faker.datatype.boolean(),
       administrador: faker.datatype.boolean(),

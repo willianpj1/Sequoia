@@ -41,7 +41,7 @@ async function deleteUser(id) {
 
         if (response.status) {
             toast('success', 'Excluído', response.msg);
-            $('#table-user').DataTable().ajax.reload();
+            $('#table-users').DataTable().ajax.reload();
         } else {
             toast('error', 'Erro', response.msg);
         }
@@ -51,18 +51,18 @@ async function deleteUser(id) {
 async function editUser(id) {
     try {
         // 1. Busca os dados completos do usuário
-        const user = await api.users.findById(id);
-        if (!user) {
+        const users = await api.users.findById(id);
+        if (!users) {
             toast('error', 'Erro', 'Usuário não encontrado.');
             return;
         }
         // 2. Salva no temp store com a ação 'e' (editar)
-        await api.temp.set('user:edit', {
+        await api.temp.set('users:edit', {
             action: 'e',
-            ...user,
+            ...users,
         });
         // 3. Abre a modal
-        api.window.openModal('pages/users', {
+        api.window.openModal('pages/user', {
             width: 600,
             height: 500,
             title: 'Editar Usuário',

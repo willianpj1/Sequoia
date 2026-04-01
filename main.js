@@ -9,7 +9,7 @@ app.whenReady().then(() => {
     const win = Template.create('main', {
         width: 1280,
         height: 800,
-        title: 'DESKIVO',
+        title: 'SEQUOIA_SYSTEM',
     });
 
     Template.loadView(win, 'pages/index');

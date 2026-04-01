@@ -17,11 +17,26 @@
                 <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o nome" autofocus>
                 <label for="nome">Nome do Usuario</label>
             </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="sobrenome" name="sobrenome" placeholder="Digite o sobrenome" autofocus>
+                <label for="sobrenome">Sobrenome do Usuario</label>
+            </div>
         </div>
         <div class="col-6">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite o CPF" autofocus>
                 <label for="cpf">CPF do Usuario</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="rg" name="rg" placeholder="Digite o RG" autofocus>
+                <label for="rg">RG do Usuario</label>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite a senha"
+                    autofocus>
+                <label for="senha">Senha do Usuario</label>
             </div>
         </div>
     </div>
@@ -48,5 +63,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="file:///{{ assets }}/js/user.js"></script>
+<script src="file:///{{ assets }}/js/users.js"></script>
 {% endblock %}

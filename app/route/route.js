@@ -1,8 +1,8 @@
 import { ipcMain, BrowserWindow } from 'electron';
 import Template from '../mixin/Template.js';
 import Customer from '../controller/Customer.js';
-import User from '../controller/Users.js';
 import Users from '../controller/Users.js';
+import Products from '../controller/Product.js';
 
 
 function getWin(event) {
@@ -108,5 +108,33 @@ ipcMain.handle('users:update', async (_e, id, data) => {
 ipcMain.handle('users:delete', async (_e, id) => {
     const result = await Users.delete(id);
     if (result.status) broadcastReload('users:reload');
+    return result;
+});
+
+//-------------------------------------------------------------------//
+//  PRODUCT
+ipcMain.handle('products:insert', async (_e, data) => {
+    const result = await Products.insert(data);
+    if (result.status) broadcastReload('products:reload');
+    return result;
+});
+
+ipcMain.handle('products:find', async (_e, where = {}) => {
+    return await Products.find(where);
+});
+
+ipcMain.handle('products:findById', async (_e, id) => {
+    return await Products.findById(id);
+});
+
+ipcMain.handle('products:update', async (_e, id, data) => {
+    const result = await Products.update(id, data);
+    if (result.status) broadcastReload('products:reload');
+    return result;
+});
+
+ipcMain.handle('products:delete', async (_e, id) => {
+    const result = await Products.delete(id);
+    if (result.status) broadcastReload('products:reload');
     return result;
 });
