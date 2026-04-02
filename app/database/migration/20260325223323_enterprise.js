@@ -6,7 +6,7 @@ export function up(knex) {
         table.text('cpf_cnpj').notNullable();
         table.text('rg_ie').notNullable();
         table.text('data_nascimento_abertura').notNullable();
-        table.boolean('ativo').notNullable().defaultTo(true);
+        table.boolean('ativo').notNullable().defaultTo(false);
         //Data e hora do registro criado automaticamente
         table.timestamp('criado_em', { useTz: false }).defaultTo(knex.fn.now());
         table.timestamp('atualizado_em', { useTz: false }).defaultTo(knex.fn.now());

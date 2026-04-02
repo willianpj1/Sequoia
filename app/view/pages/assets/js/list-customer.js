@@ -1,11 +1,5 @@
-import { Datatables } from "../components/Datatables.js";
-
-api.customer.onReload(() => {
-    $('#table-customers').DataTable().ajax.reload(null, false);
-});
-
-// Inicializa a tabela
-Datatables.SetTable('#table-customers', [
+// Inicializa a tabela e armazena na constante
+const table = Datatables.SetTable('#table-customers', [
     { data: 'id' },
     { data: 'nome' },
     { data: 'cpf' },
@@ -26,6 +20,11 @@ Datatables.SetTable('#table-customers', [
     }
 ]).getData(filter => api.customer.find(filter));
 
+// Recarrega usando a constante table
+api.customer.onReload(() => {
+    table.ajax.reload(null, false);
+});
+
 async function deleteCustomer(id) {
     const result = await Swal.fire({
         title: 'Tem certeza?',
@@ -41,7 +40,7 @@ async function deleteCustomer(id) {
 
         if (response.status) {
             toast('success', 'Excluído', response.msg);
-            $('#table-customers').DataTable().ajax.reload();
+            table.ajax.reload(null, false);
         } else {
             toast('error', 'Erro', response.msg);
         }
@@ -50,18 +49,17 @@ async function deleteCustomer(id) {
 
 async function editCustomer(id) {
     try {
-        // 1. Busca os dados completos do cliente
         const customer = await api.customer.findById(id);
         if (!customer) {
             toast('error', 'Erro', 'Cliente não encontrado.');
             return;
         }
-        // 2. Salva no temp store com a ação 'e' (editar)
+
         await api.temp.set('customer:edit', {
             action: 'e',
             ...customer,
         });
-        // 3. Abre a modal
+
         api.window.openModal('pages/customer', {
             width: 600,
             height: 500,
@@ -72,5 +70,6 @@ async function editCustomer(id) {
     }
 }
 
+// Exporta para o escopo global
 window.deleteCustomer = deleteCustomer;
 window.editCustomer = editCustomer;

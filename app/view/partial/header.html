@@ -29,22 +29,24 @@
                                 Usuário
                             </span>
                         </li>
-                        <li><a class="dropdown-item" href="#">
-                                <i class="fa-solid fa-dolly"></i>
-                                Fornecedor</a></li>
-                        <li><a class="dropdown-item" href="#">
-                                <i class="fa-solid fa-arrow-right-to-city"></i>
-                                Empresa</a></li>
                         <li>
                             <span class="dropdown-item"
-                                onclick="api.window.open('pages/list-products', { title: 'Produtos' })"
+                                onclick="api.window.open('pages/listasupplier', { title: 'Fornecedores' })"
                                 style="cursor: pointer;">
                                 <i class="fa-solid fa-truck-ramp-box"></i>
-                                Produto
+                                Fornecedor
                             </span>
                         </li>
-                    </ul>
                 </li>
+                <li>
+                    <span class="dropdown-item" onclick="api.window.open('pages/listaproduct', { title: 'Produtos' })"
+                        style="cursor: pointer;">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                        Produto
+                    </span>
+                </li>
+            </ul>
+            </li>
             </ul>
         </div>
     </div>

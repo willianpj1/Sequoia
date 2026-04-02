@@ -1,12 +1,12 @@
 import connection from '../database/Connection.js';
 
-export default class Product {
+export default class Supplier {
 
-    static table = 'product';
+    static table = 'supplier';
 
-    static #columns = ['id', 'nome', 'codigo_barra', 'unidade', 'preco_compra', 'margem_lucro', 'preco_venda', 'descricao', 'ativo', 'criado_em', 'atualizado_em', null];
+    static #columns = ['id', 'nome', 'cnpj', 'email', 'telefone', null];
 
-    static #searchable = ['nome', 'codigo_barra', 'unidade', 'descricao'];
+    static #searchable = ['nome', 'cnpj', 'email', 'telefone'];
 
     static async insert(data) {
         if (!data.nome || data.nome.trim() === '') {
@@ -14,9 +14,9 @@ export default class Product {
         }
 
         try {
-            const clean = Product.#sanitize(data);
+            const clean = Supplier.#sanitize(data);
 
-            const [result] = await connection(Product.table)
+            const [result] = await connection(Supplier.table)
                 .insert(clean)
                 .returning('*');
 
@@ -30,7 +30,7 @@ export default class Product {
     static async find(data = {}) {
         const { term = '', limit = 10, offset = 0, orderType = 'asc', column = 0, draw = 1 } = data;
 
-        const [{ count: total }] = await connection(Product.table)
+        const [{ count: total }] = await connection(Supplier.table)
             .where({ excluido: false })
             .count('id as count');
 
@@ -40,7 +40,7 @@ export default class Product {
             query.where({ excluido: false });
             if (search) {
                 query.where(function () {
-                    for (const col of Product.#searchable) {
+                    for (const col of Supplier.#searchable) {
                         this.orWhereRaw(`CAST("${col}" AS TEXT) ILIKE ?`, [`%${search}%`]);
                     }
                 });
@@ -48,14 +48,14 @@ export default class Product {
             return query;
         }
 
-        const filteredQ = connection(Product.table).count('id as count');
+        const filteredQ = connection(Supplier.table).count('id as count');
         applySearch(filteredQ);
         const [{ count: filtered }] = await filteredQ;
 
-        const orderColumn = Product.#columns[column] || 'id';
+        const orderColumn = Supplier.#columns[column] || 'id';
         const orderDir = orderType === 'desc' ? 'desc' : 'asc';
 
-        const dataQ = connection(Product.table).select('*');
+        const dataQ = connection(Supplier.table).select('*');
         applySearch(dataQ);
         dataQ.orderBy(orderColumn, orderDir);
         dataQ.limit(parseInt(limit));
@@ -74,7 +74,7 @@ export default class Product {
     static async findById(id) {
         if (!id) return null;
 
-        const row = await connection(Product.table)
+        const row = await connection(Supplier.table)
             .where({ id, excluido: false })
             .first();
 
@@ -89,17 +89,16 @@ export default class Product {
         }
 
         try {
-            const clean = Product.#sanitize(data);
+            const clean = Supplier.#sanitize(data);
             delete clean.id;
-            clean.atualizado_em = new Date();
 
-            const [result] = await connection(Product.table)
+            const [result] = await connection(Supplier.table)
                 .where({ id, excluido: false })
                 .update(clean)
                 .returning('*');
 
             if (!result) {
-                return { status: false, msg: 'Produto não encontrado', data: [] };
+                return { status: false, msg: 'Fornecedor não encontrado', data: [] };
             }
 
             return { status: true, msg: 'Atualizado com sucesso!', id: result.id, data: [result] };
@@ -109,30 +108,26 @@ export default class Product {
         }
     }
 
-    // Soft delete — marca como excluído em vez de apagar
     static async delete(id) {
         if (!id) return { status: false, msg: 'ID é obrigatório' };
 
         try {
-            const [result] = await connection(Product.table)
-                .where({ id, excluido: false })
-                .update({ excluido: true, atualizado_em: new Date() })
-                .returning('id');
-
-            if (!result) {
-                return { status: false, msg: 'Produto não encontrado' };
-            }
-
+            await connection(Supplier.table).where({ id }).del();
             return { status: true, msg: 'Excluído com sucesso!' };
-
         } catch (err) {
             return { status: false, msg: 'Erro: ' + err.message };
         }
     }
 
+    static async count() {
+        const [{ count }] = await connection(Supplier.table)
+            .whereNot({ excluido: true })
+            .count('id as count');
+        return parseInt(count);
+    }
+
     static #sanitize(data) {
         const ignore = ['id', 'action'];
-        const numerics = ['preco_compra', 'margem_lucro', 'preco_venda'];
         const clean = {};
 
         for (const [key, value] of Object.entries(data)) {
@@ -140,16 +135,9 @@ export default class Product {
             if (value === '' || value === null || value === undefined) continue;
             if (value === 'true') { clean[key] = true; continue; }
             if (value === 'false') { clean[key] = false; continue; }
-            if (numerics.includes(key)) { clean[key] = parseFloat(value) || 0; continue; }
             clean[key] = value;
         }
 
         return clean;
-    }
-    static async count() {
-        const [{ count }] = await connection(Product.table)
-            .whereNot({ excluido: true })
-            .count('id as count');
-        return parseInt(count);
     }
 }

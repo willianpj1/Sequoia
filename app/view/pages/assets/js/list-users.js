@@ -1,11 +1,5 @@
-import { Datatables } from "../components/Datatables.js";
-
-api.users.onReload(() => {
-    $('#table-users').DataTable().ajax.reload(null, false);
-});
-
-// Inicializa a tabela
-Datatables.SetTable('#table-users', [
+// Inicializa a tabela e armazena na constante (removido import)
+const table = Datatables.SetTable('#table-users', [
     { data: 'id' },
     { data: 'nome' },
     { data: 'cpf' },
@@ -26,6 +20,11 @@ Datatables.SetTable('#table-users', [
     }
 ]).getData(filter => api.users.find(filter));
 
+// Utiliza a constante table para o reload
+api.users.onReload(() => {
+    table.ajax.reload(null, false);
+});
+
 async function deleteUser(id) {
     const result = await Swal.fire({
         title: 'Tem certeza?',
@@ -41,7 +40,7 @@ async function deleteUser(id) {
 
         if (response.status) {
             toast('success', 'Excluído', response.msg);
-            $('#table-users').DataTable().ajax.reload();
+            table.ajax.reload(null, false);
         } else {
             toast('error', 'Erro', response.msg);
         }
@@ -50,18 +49,17 @@ async function deleteUser(id) {
 
 async function editUser(id) {
     try {
-        // 1. Busca os dados completos do usuário
-        const users = await api.users.findById(id);
-        if (!users) {
+        const user = await api.users.findById(id);
+        if (!user) {
             toast('error', 'Erro', 'Usuário não encontrado.');
             return;
         }
-        // 2. Salva no temp store com a ação 'e' (editar)
+
         await api.temp.set('users:edit', {
             action: 'e',
-            ...users,
+            ...user,
         });
-        // 3. Abre a modal
+
         api.window.openModal('pages/user', {
             width: 600,
             height: 500,
@@ -72,5 +70,6 @@ async function editUser(id) {
     }
 }
 
+// Vincula ao escopo global
 window.deleteUser = deleteUser;
 window.editUser = editUser;

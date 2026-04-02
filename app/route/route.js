@@ -2,6 +2,7 @@ import { ipcMain, BrowserWindow } from 'electron';
 import Template from '../mixin/Template.js';
 import Customer from '../controller/Customer.js';
 import Users from '../controller/Users.js';
+import Supplier from '../controller/Supplier.js';
 import Products from '../controller/Product.js';
 
 
@@ -137,4 +138,33 @@ ipcMain.handle('products:delete', async (_e, id) => {
     const result = await Products.delete(id);
     if (result.status) broadcastReload('products:reload');
     return result;
+});
+ipcMain.handle('supplier:insert', async (_e, data) => {
+    const result = await Supplier.insert(data);
+    if (result.status) broadcastReload('supplier:reload');
+    return result;
+});
+
+ipcMain.handle('supplier:find', async (_e, where = {}) => {
+    return await Supplier.find(where);
+});
+
+ipcMain.handle('supplier:findById', async (_e, id) => {
+    return await Supplier.findById(id);
+});
+
+ipcMain.handle('supplier:update', async (_e, id, data) => {
+    const result = await Supplier.update(id, data);
+    if (result.status) broadcastReload('supplier:reload');
+    return result;
+});
+
+ipcMain.handle('supplier:delete', async (_e, id) => {
+    const result = await Supplier.delete(id);
+    if (result.status) broadcastReload('supplier:reload');
+    return result;
+});
+
+ipcMain.handle('supplier:count', async () => {
+    return await Supplier.count();
 });

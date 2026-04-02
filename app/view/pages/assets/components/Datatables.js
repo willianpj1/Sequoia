@@ -1,26 +1,10 @@
-/**
- * Classe estática Datatables
- * 
- * Uso:
- *   Datatables.SetTable('#table-customers', columns, options).getData(filter => api.customer.find(filter));
- * 
- * Parâmetros de SetTable:
- *   - selector  {string}  Seletor da tabela (ex: '#table-customers')
- *   - columns   {Array}   Definição das colunas do DataTable
- *   - options   {Object}  (Opcional) Sobrescrever configurações padrão
- * 
- */
-export class Datatables {
-    //Configura a tabela e retorna um objeto com o método getData para encadear.
+class Datatables {
     static SetTable(selector, columns, options = {}) {
         return {
-            //Conecta a fonte de dados e inicializa o DataTable.
             getData(apiFn) {
-                // Destrói instância anterior se existir, para evitar re-inicialização
                 if ($.fn.DataTable.isDataTable(selector)) {
                     $(selector).DataTable().destroy();
                 }
-                // Configuração padrão completa
                 const defaultConfig = {
                     paging: true,
                     lengthChange: true,
@@ -50,12 +34,7 @@ export class Datatables {
                             const response = await apiFn(filter);
                             callback(response);
                         } catch (error) {
-                            callback({
-                                draw: data?.draw,
-                                recordsTotal: 0,
-                                recordsFiltered: 0,
-                                data: []
-                            });
+                            callback({ draw: data?.draw, recordsTotal: 0, recordsFiltered: 0, data: [] });
                         }
                     },
                     columns: columns,
@@ -67,13 +46,9 @@ export class Datatables {
                     },
                     initComplete: function () {
                         setTimeout(() => {
-                            // Remove o label "Pesquisar"
                             const label = document.querySelector(`${selector}_wrapper .dt-search label`);
-                            if (label) {
-                                label.remove();
-                            }
+                            if (label) label.remove();
 
-                            // Ajusta a div do campo de pesquisa
                             const searchDiv = document.querySelector(`${selector}_wrapper .row > div.dt-layout-start`);
                             if (searchDiv) {
                                 searchDiv.classList.remove('col-md-auto');
@@ -81,9 +56,7 @@ export class Datatables {
                             }
 
                             const divSearch = document.querySelector(`${selector}_wrapper .dt-search`);
-                            if (divSearch) {
-                                divSearch.classList.add('w-100');
-                            }
+                            if (divSearch) divSearch.classList.add('w-100');
 
                             const input = document.querySelector(`${selector}_wrapper .dt-search input`);
                             if (input) {
@@ -94,18 +67,12 @@ export class Datatables {
                             }
 
                             const pageLength = document.querySelector(`${selector}_wrapper .dt-length select`);
-                            if (pageLength) {
-                                pageLength.classList.add('form-select-md');
-                            }
+                            if (pageLength) pageLength.classList.add('form-select-md');
                         }, 100);
                     }
                 };
-                // Mescla configurações padrão com as opções extras (options sobrescreve o padrão)
                 const finalConfig = { ...defaultConfig, ...options };
-                // Se options tiver 'columns', usa as options; senão mantém as passadas em SetTable
-                if (!options.columns) {
-                    finalConfig.columns = columns;
-                }
+                if (!options.columns) finalConfig.columns = columns;
                 return $(selector).DataTable(finalConfig);
             }
         };

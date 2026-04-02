@@ -38,8 +38,8 @@ const VIEW_DIR = path.join(APP_DIR, 'view');
 const PRELOAD_PATH = path.join(APP_DIR, 'config', 'preload.js');
 // Define um diretório temporário para armazenar as views renderizadas
 // app.getPath('temp') retorna a pasta temporária do sistema operacional
-// ex (Windows): C:\Users\usuario\AppData\Local\Temp\sequoia-views
-const TEMP_DIR = path.join(app.getPath('temp'), 'sequoia-views');
+// ex (Windows): C:\Users\usuario\AppData\Local\Temp\deskivo-views
+const TEMP_DIR = path.join(app.getPath('temp'), 'deskivo-views');
 
 // ── Configura o motor de templates Nunjucks ──
 // nunjucks.configure diz ao Nunjucks onde estão os templates e como se comportar
@@ -69,7 +69,7 @@ nunjucksEnv.addGlobal('assets', ASSETS_PATH);
 // Útil para importar libs direto do node_modules no HTML: {{ modules }}/bootstrap/...
 nunjucksEnv.addGlobal('modules', MODULES_PATH);
 // Registra o nome da aplicação como variável global
-// Pode ser exibido em qualquer template assim: {{ appName }} → "DESKIVO"
+// Pode ser exibido em qualquer template assim: {{ appName }} → "Sequoia_System"
 nunjucksEnv.addGlobal('appName', 'Sequoia_System');
 // Registra se está em produção como variável global
 // Permite usar condicionais nos templates: {% if isProd %} ... {% endif %}

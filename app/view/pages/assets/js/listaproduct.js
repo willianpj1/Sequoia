@@ -1,9 +1,4 @@
-import { Datatables } from "../components/Datatables.js"
-api.product.onReload(() => {
-    $('#table-products').DataTable().ajax.reload(null, false);
-});
-// Inicializa a tabela
-Datatables.SetTable('#table-products', [
+const table = Datatables.SetTable('#table-products', [
     { data: 'id' },
     { data: 'nome' },
     { data: 'codigo_barra' },
@@ -11,12 +6,14 @@ Datatables.SetTable('#table-products', [
     {
         data: 'preco_compra',
         render: function (data) {
+            if (data == null) return '-';
             return parseFloat(data).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
     },
     {
         data: 'preco_venda',
         render: function (data) {
+            if (data == null) return '-';
             return parseFloat(data).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
     },
@@ -24,24 +21,13 @@ Datatables.SetTable('#table-products', [
         data: 'ativo',
         render: function (data) {
             return data
-                ? `<span>Ativo <i class="fa-regular fa-square-check"></i></span>`
-                : `<span>Inativo <i class="fa-regular fa-square-full"></i></span>`;
-        }
-    },
-    {
-        data: 'criado_em',
-        render: function (data) {
-            return new Date(data).toLocaleString('pt-BR');
-        }
-    },
-    {
-        data: 'atualizado_em',
-        render: function (data) {
-            return new Date(data).toLocaleString('pt-BR');
+                ? `<span class="badge bg-success">Ativo</span>`
+                : `<span class="badge bg-danger">Inativo</span>`;
         }
     },
     {
         data: null,
+        defaultContent: '',
         orderable: false,
         searchable: false,
         render: function (row) {
@@ -55,7 +41,12 @@ Datatables.SetTable('#table-products', [
             `;
         }
     }
-]).getData(filter => api.product.find(filter));
+]).getData(filter => api.products.find(filter)); // ✅
+
+api.products.onReload(() => { // ✅
+    table.ajax.reload(null, false);
+});
+
 async function deleteProduct(id) {
     const result = await Swal.fire({
         title: 'Tem certeza?',
@@ -65,40 +56,34 @@ async function deleteProduct(id) {
         confirmButtonText: 'Sim, excluir',
         cancelButtonText: 'Cancelar',
     });
-
     if (result.isConfirmed) {
-        const response = await api.product.delete(id);
-
+        const response = await api.products.delete(id); // ✅
         if (response.status) {
             toast('success', 'Excluído', response.msg);
-            $('#table-products').DataTable().ajax.reload();
+            table.ajax.reload(null, false);
         } else {
             toast('error', 'Erro', response.msg);
         }
     }
 }
+
 async function editProduct(id) {
     try {
-        // 1. Busca os dados completos do cliente
-        const product = await api.product.findById(id);
+        const product = await api.products.findById(id); // ✅
         if (!product) {
             toast('error', 'Erro', 'Produto não encontrado.');
             return;
         }
-        // 2. Salva no temp store com a ação 'e' (editar)
-        await api.temp.set('product:edit', {
-            action: 'e',
-            ...product,
-        });
-        // 3. Abre a modal
-        api.window.openModal('pages/product', {
-            width: 1200,
-            height: 420,
+        await api.temp.set('products:edit', { action: 'e', ...product });
+        api.window.openModal('pages/products', {
+            width: 800,
+            height: 600,
             title: 'Editar Produto',
         });
     } catch (err) {
         toast('error', 'Falha', 'Erro: ' + err.message);
     }
 }
+
 window.deleteProduct = deleteProduct;
 window.editProduct = editProduct;
