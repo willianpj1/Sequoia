@@ -45,4 +45,13 @@ contextBridge.exposeInMainWorld('api', {
         count() { return ipcRenderer.invoke('supplier:count'); },
         onReload(callback) { ipcRenderer.on('supplier:reload', () => callback()); },
     },
+    enterprise: {
+        insert(data) { return ipcRenderer.invoke('enterprise:insert', data); },
+        find(where) { return ipcRenderer.invoke('enterprise:find', where); },
+        findById(id) { return ipcRenderer.invoke('enterprise:findById', id); },
+        update(id, data) { return ipcRenderer.invoke('enterprise:update', id, data); },
+        delete(id) { return ipcRenderer.invoke('enterprise:delete', id); },
+        count() { return ipcRenderer.invoke('enterprise:count'); },
+        onReload(callback) { ipcRenderer.on('enterprise:reload', () => callback()); },
+    },
 });
