@@ -14,7 +14,19 @@ Inputmask("currency", {
     }
 }).mask("#preco_venda, #preco_compra");
 
-SellingPriceCalculator.bindForm();
+totaltax.addEventListener('input', () => {
+    const calculator = new SellingPriceCalculator()
+        .addPurchasePrice(preco_compra.value)
+        .addTotalTax(total_imposto.value / 100)
+        .addProfitMargin(margem_lucro.value / 100)
+        .operatingCost(custo_operacional.value / 100);
+
+    try {
+        const result = calculator.getData();
+        valor_venda_sugerido.value = result.valor_venda_sugerido.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        valor_total_imposto.value = result.valor_total_imposto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        valor_margem_lucro.value = result.valor_margem_lucro.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    }
 
 //  CARREGA DADOS DE EDIÇÃO (se existirem)
 (async () => {
