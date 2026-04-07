@@ -24,7 +24,7 @@ export default class Customer {
                 .insert(clean)
                 .returning('*');
 
-            return { stat us: true, msg: 'Salvo com sucesso!', id: result.id, data: [result] };
+            return { status: true, msg: 'Salvo com sucesso!', id: result.id, data: [result] };
 
         } catch (err) {
             return { status: false, msg: 'Erro: ' + err.message, id: null, data: [] };

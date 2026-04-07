@@ -1,3 +1,4 @@
+import {SellingPriceCalculator} from "./components/SellingPriceCalculator.js";
 const InsertButton = document.getElementById('insert');
 const Action = document.getElementById('action');
 const Id = document.getElementById('id');
@@ -12,6 +13,8 @@ Inputmask("currency", {
         return String(value).replace('.', ',');
     }
 }).mask("#preco_venda, #preco_compra");
+
+SellingPriceCalculator.bindForm();
 
 //  CARREGA DADOS DE EDIÇÃO (se existirem)
 (async () => {
