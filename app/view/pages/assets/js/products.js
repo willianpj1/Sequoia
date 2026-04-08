@@ -1,7 +1,9 @@
-import {SellingPriceCalculator} from "./components/SellingPriceCalculator.js";
-const InsertButton = document.getElementById('insert');
+import { SellingPriceCalculator } from "../components/SellingPriceCalculator";
+
+//import { SellingPriceCalculator } from "../components/SellingPriceCalculator.js";
 const Action = document.getElementById('action');
 const Id = document.getElementById('id');
+const totalTax = document.getElementById('total_imposto');
 Inputmask("currency", {
     radixPoint: ',',
     inputtype: "text",
@@ -13,24 +15,29 @@ Inputmask("currency", {
         return String(value).replace('.', ',');
     }
 }).mask("#preco_venda, #preco_compra");
-
-totaltax.addEventListener('input', () => {
-    const calculator = new SellingPriceCalculator()
-        .addPurchasePrice(preco_compra.value)
-        .addTotalTax(total_imposto.value / 100)
-        .addProfitMargin(margem_lucro.value / 100)
-        .operatingCost(custo_operacional.value / 100);
-
-    try {
-        const result = calculator.getData();
-        valor_venda_sugerido.value = result.valor_venda_sugerido.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-        valor_total_imposto.value = result.valor_total_imposto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-        valor_margem_lucro.value = result.valor_margem_lucro.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+Inputmask("currency", {
+    radixPoint: ',',
+    inputtype: "text",
+    prefix: '% ',
+    autoGroup: true,
+    groupSeparator: '.',
+    rightAlign: false,
+    onBeforeMask: function (value) {
+        return String(value).replace('.', ',');
     }
+}).mask("#total_imposto, #margem_lucro, #custo_operacional");
+
+totalTax.addEventListener('keydown', () => {
+    const tax = String(totalTax.value).replace('%', '').replace(',', '.');
+    const result =SellingPriceCalculator.create()
+        .addTotalTax(tax)
+        .getData();
+    document.getElementById('total_importo_value').innerHTML = `${result.total_imposto}`;
+});
 
 //  CARREGA DADOS DE EDIÇÃO (se existirem)
 (async () => {
-    const editData = await api.temp.get('products:edit');
+    const editData = await api.temp.get('product:edit');
     if (editData) {
         // Modo edição
         Action.value = editData.action || 'e';
@@ -52,32 +59,3 @@ totaltax.addEventListener('input', () => {
         Id.value = '';
     }
 })();
-InsertButton.addEventListener('click', async () => {
-    let timer = 3000;
-    $('#insert').prop('disabled', true);
-    const data = formToJson(form);
-    // Se NÃO é cadastro novo, pega o ID para update
-    let id = Action.value !== 'c' ? Id.value : null;
-    try {
-
-        const response = Action.value === 'c'
-            ? await api.products.insert(data)
-            : await api.products.update(id, data);
-
-        if (!response.status) {
-            toast('error', 'Erro', response.msg, timer);
-            return;
-        }
-        toast('success', 'Sucesso', response.msg, timer);
-        form.reset();
-        // Fecha a janela modal após 1.5s (tempo do toast)
-        setTimeout(() => {
-            api.window.close();
-        }, timer);
-
-    } catch (err) {
-        toast('error', 'Falha', 'Erro: ' + err.message, timer);
-    } finally {
-        $('#insert').prop('disabled', false);
-    }
-});
