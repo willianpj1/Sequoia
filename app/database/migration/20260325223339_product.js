@@ -8,6 +8,8 @@ export function up(knex) {
         table.decimal('preco_compra', 18, 4).defaultTo(0);
         table.decimal('margem_lucro', 8, 4).defaultTo(0);
         table.decimal('preco_venda', 18, 4).defaultTo(0);
+        table.decimal('total_imposto', 18, 4).defaultTo(0);
+        table.decimal('custo_operacional', 18, 4).defaultTo(0);
         table.text('descricao');
         table.boolean('ativo').defaultTo(true);
         table.boolean('excluido').defaultTo(false);
@@ -21,5 +23,5 @@ export function up(knex) {
 };
 
 export function down(knex) {
-    return knex.schema.dropTable('product');
+    return knex.schema.dropTable('products');
 };

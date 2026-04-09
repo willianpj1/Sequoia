@@ -1,3 +1,5 @@
+import { Datatables } from "../components/Datatables.js";
+
 const table = Datatables.SetTable('#table-products', [
     { data: 'id' },
     { data: 'nome' },

@@ -1,5 +1,7 @@
 {% extends "layouts/main.html" %}
-
+{% block styles %}
+<link rel="stylesheet" href="file:///{{ assets }}//css/product.css">
+{% endblock %}
 {% block title %}Novo Produto{% endblock %}
 
 {% block content %}
@@ -59,6 +61,9 @@
             </div>
         </div>
         <div class="col-2">
+            <span id="total_importo_value"></span>
+        </div>
+        <div class="col-2">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="unidade" name="unidade" placeholder="example" autofocus>
                 <label for="unidade">Unidade do produto</label>
@@ -73,6 +78,28 @@
     </div>
     <div class="row">
         <div class="col-12">
+            <div class="resultado-row mb-2 d-none" id="resultado-row">
+                <div class="metrica-col">
+                    <span class="metrica-label">Total de imposto</span>
+                    <span class="metrica-valor" id="val-imposto">—</span>
+                </div>
+                <div class="metrica-col">
+                    <span class="metrica-label">Custo operacional</span>
+                    <span class="metrica-valor" id="val-custo">—</span>
+                </div>
+                <div class="metrica-col">
+                    <span class="metrica-label">Margem de lucro</span>
+                    <span class="metrica-valor" id="val-margem">—</span>
+                </div>
+                <div class="metrica-col destaque">
+                    <span class="metrica-label">Preço de venda sugerido</span>
+                    <span class="metrica-valor" id="val-venda">—</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             <div class="form-floating">
                 <textarea class="form-control" placeholder="Leave a comment here" id="descricao" name="descricao"
                     style="height: 100px"></textarea>
@@ -82,7 +109,7 @@
     </div>
     <div class="row mt-2">
         <div class="col-12 mt-2">
-            <button type="button" class="btn btn-outline-success" id="insert">
+            <button type="button" class="btn btn-outline-success" id="insert" name="insert">
                 <i class="fa-solid fa-floppy-disk"></i>
                 Salvar
             </button>
@@ -93,5 +120,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="file:///{{ assets }}/js/product.js"></script>
+<script type="module" src="file:///{{ assets }}/js/products.js"></script>
 {% endblock %}

@@ -1,4 +1,4 @@
-class Datatables {
+export class Datatables {
     static SetTable(selector, columns, options = {}) {
         return {
             getData(apiFn) {
